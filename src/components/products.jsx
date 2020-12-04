@@ -103,7 +103,7 @@ class Products extends Component {
 
        const {products : Allproducts,sortColumn, dropselectedss, dropselecteds, dropselected, currentPage, pageSize, subsubCategories, subCategories, mainCategories} = this.state;
 
-        if (Allproducts.length === 0) return <p>No products in the database</p>
+        if (Allproducts.length === 0) return <h3>Loading Data from the Database.</h3>
         
         const filtered = (dropselected && dropselected.maincategoryname !== "Unselect") ? Allproducts.filter(m => m.mainCategory._id === dropselected._id) : Allproducts; 
 
