@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: sans-serif;
+  /* font-family: sans-serif; */
   padding: 0 0 0 0;
 }
 
@@ -27,7 +27,7 @@ body {
   background: rgb(252, 144, 4);
   padding: 10px;
   margin-top: 10px;
-  margin-left: -400px;
+  /* margin-left: -400px; */
   top: 30%;
   left: 65%;
 }
