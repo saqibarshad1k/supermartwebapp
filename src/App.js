@@ -12,6 +12,8 @@ import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 import jwtDecode from "jwt-decode"
 import Logout from './components/logout';
+import MainCate from './components/maincate';
+import MainCategoryForm from './components/maincategoryform';
 
 class App extends Component {
 
@@ -37,6 +39,8 @@ class App extends Component {
 
     return ( 
 
+      
+
       <React.Fragment>
         <ToastContainer></ToastContainer>
         {this.state.user && <NavBar user={this.state.user}></NavBar>}
@@ -53,6 +57,13 @@ class App extends Component {
         }}></Route>
         <Route path="/logout" component={Logout}></Route>
         <Route path="/products/:id" component={ProductForm}></Route>
+        <Route path="/maincategories/:id" component={MainCategoryForm}></Route>
+        <Route 
+        path="/maincategories" 
+        render={props => {
+          if(!this.state.user) return<Redirect to="/login"></Redirect>
+          return <MainCate {...props} ></MainCate>
+        }}></Route>
         <Route 
         path="/products" 
         render={props => {

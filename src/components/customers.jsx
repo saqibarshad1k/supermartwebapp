@@ -22,19 +22,28 @@ class Customers extends Component {
          
         this.setState({order: data})
 
+       
+        const socket2 = io("https://evening-beach-81187.herokuapp.com/apis/order/socket2");
+       
+           socket2.on("orderUpdate2", (orderUpdate) => {
+        
+                toast.info(orderUpdate);
+
+            });
 
         const socket = io("https://evening-beach-81187.herokuapp.com/apis/order/socket");
+        socket.on("orderUpdate", (orderUpdate) => {
+            if (orderUpdate.status === "pending")
+            {
+            
+                toast.info("New Order Recieved.");
 
-         socket.on("orderUpdate", (orderUpdate) => {
-
-            toast.info("New Order Recieved.");
-     
                   let { order } = this.state;
                   order.push(orderUpdate) 
                   this.setState({order})
-    
-    
+            }
   });
+
 
     }
     

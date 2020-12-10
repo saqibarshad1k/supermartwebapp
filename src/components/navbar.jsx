@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Link, NavLink} from "react-router-dom";
 import Logout from './logout';
+import {NavDropdown} from 'react-bootstrap'
 
 const NavBar = ({user}) => {
     return ( 
@@ -13,7 +14,16 @@ const NavBar = ({user}) => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <NavLink className="nav-link" to="/products">Manage Products</NavLink>
+    
+              <NavDropdown title="Manage Products" id="nav-dropdown">
+        <NavDropdown.Item eventKey="4.1"> <NavLink style={{color: "black"}} className="nav-link" to="/products">Products</NavLink>
+              </NavDropdown.Item>
+        <NavDropdown.Item eventKey="5"> <NavLink style={{color: "black"}} className="nav-link" to="/maincategories">Main Category</NavLink> </NavDropdown.Item>
+        <NavDropdown.Item eventKey="5">Sub Category</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item eventKey="4.4">Separated link</NavDropdown.Item>
+      </NavDropdown>
+            
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/customers">Customers</NavLink>

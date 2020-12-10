@@ -20,9 +20,12 @@ class Products extends Component {
         mainCategories: [],
         subCategories: [],
         subsubCategories: [],
+        orisub:[],
+        orisubsub:[],
         dropselected: "",
         dropselecteds: "",
         dropselectedss: "",
+        subs: "",
         sortColumn:
         {
             path:"productName",
@@ -36,8 +39,9 @@ class Products extends Component {
          const {data: sub} = await getSubCategories();
          const {data: subsub} = await getSubSubCategories();
          const {data} =  await getProducts();
+
          
-        this.setState({products: data, mainCategories: main, subCategories: sub, subsubCategories: subsub})
+        this.setState({orisub: sub, orisubsub: subsub, products: data, mainCategories: main, subCategories: sub, subsubCategories: subsub})
         
      }
 
@@ -73,12 +77,38 @@ class Products extends Component {
      }
      handleMainSelect = (selected) => {
 
+      
+        if(selected.maincategoryname !== "Unselect")
+        {
+            const s = this.state.orisub.filter(m => selected._id === m.mainCategory._id )
+             
+            this.setState({subCategories: s});
+        }
+        else {
+
+            this.setState({subCategories: this.state.orisub, subsubCategories: this.state.orisubsub});
+        }
+        
         const sel = (selected.maincategoryname !== "Unselect" ? selected : "") ;
+        
         this.setState({dropselected: sel, currentPage: 1}) 
+        
  
      }
 
      handleSubSelect = (selected) => {
+
+        if(selected.subcategoryname !== "Unselect")
+        {
+            const s = this.state.orisubsub.filter(m => selected._id === m.subCategory._id )
+        this.setState({subsubCategories: s});
+        }
+        else {
+
+            this.setState({subsubCategories: this.state.orisubsub});
+        }
+        
+
 
         const selsub = (selected.subcategoryname !== "Unselect" ? selected : "") ;
         this.setState({dropselecteds: selsub, currentPage: 1}) 
@@ -103,7 +133,7 @@ class Products extends Component {
 
        const {products : Allproducts,sortColumn, dropselectedss, dropselecteds, dropselected, currentPage, pageSize, subsubCategories, subCategories, mainCategories} = this.state;
 
-        if (Allproducts.length === 0) return <h3>Loading Data from the Database.</h3>
+        // if (Allproducts.length === 0) return <h3>Loading Data from the Database.</h3>
         
         const filtered = (dropselected && dropselected.maincategoryname !== "Unselect") ? Allproducts.filter(m => m.mainCategory._id === dropselected._id) : Allproducts; 
 
@@ -115,6 +145,8 @@ class Products extends Component {
 
         const products = paginate(sorted, currentPage, pageSize);
         
+     
+
         return (
             <div className="row">
                 <div className="col-3">
@@ -156,19 +188,10 @@ class Products extends Component {
                     <div>
                     <Link to="/products/new"
                       className="btn btn-primary"
-                      style={{marginBottom: 20}}
-                >
+                      style={{marginBottom: 20}}>
+
                     New Product
                 </Link>
-
-                <Link to="/manageMain"
-                disable
-                      className="btn btn-success"
-                      style={{marginBottom: 20, marginLeft: 20}}
-                >
-                    Manage Categories
-                </Link>
-
 
                     </div>
 

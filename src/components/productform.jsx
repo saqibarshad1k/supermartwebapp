@@ -1,11 +1,11 @@
 import React from 'react';
 import Joi from "joi-browser"
+import firebase from './firebase'
 import Form from './reuseableComps/form';
 import { getMainCategories } from '../services/mainCategoriesService';
 import { getSubCategories } from '../services/subCategoryService';
 import { getSubSubCategories } from '../services/subsubCategoriesService';
 import { getProduct, saveProduct } from './../services/productService';
-import firebase from './firebase'
 import _ from "lodash"
 
 class ProductForm extends Form {
@@ -54,7 +54,6 @@ class ProductForm extends Form {
 
    async componentDidMount() {
 
-
     await this.populateCategories();
        
        const productId = this.props.match.params.id;
@@ -71,11 +70,7 @@ class ProductForm extends Form {
         return this.props.history.replace("/notfound")
 
 
-       }
-
-
-       
-       
+       }  
     }
    
     mapToViewModel(product) {
@@ -133,7 +128,11 @@ class ProductForm extends Form {
 
     render() { 
 
-       
+     let main = (this.state.mainCategory).filter(m => m.maincategoryname !== "Unselect")
+     let sub = (this.state.subCategory).filter(m => m.subcategoryname !== "Unselect")
+     sub = sub.filter(m => m.mainCategory._id === this.state.data.maincategoryname);
+     let subsub = (this.state.subsubCategory).filter(m => m.subsubcategoryname !== "Unselect")
+     subsub = subsub.filter(m => m.subCategory._id === this.state.data.subcategoryname);  
 
         return ( 
             <div style={{margin: "50px"}}>
@@ -147,9 +146,9 @@ class ProductForm extends Form {
                         {this.renderInput("productName","Product Name")}
                         {this.renderInput("companyName","Comapany Name")}
                         {this.renderInput("price","Price")}
-                        {this.renderSelect("maincategoryname","Main Category", (this.state.mainCategory).filter(m => m.maincategoryname !== "Unselect"))}
-                        {this.renderSelect("subcategoryname","Sub Category", (this.state.subCategory).filter(m => m.subcategoryname !== "Unselect"))}
-                        {this.renderSelect("subsubcategoryname","Sub Sub Category",(this.state.subsubCategory).filter(m => m.subsubcategoryname !== "Unselect"))}
+                        {this.renderSelect("maincategoryname","Main Category", main )}
+                        {this.renderSelect("subcategoryname","Sub Category", sub)}
+                        {this.renderSelect("subsubcategoryname","Sub Sub Category",subsub)}
                         
                         {this.renderButton("Save")}
                 </form>
