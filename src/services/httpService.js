@@ -6,7 +6,7 @@ axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
 
 const instance = axios.create({
    baseURL: process.env.REACT_APP_API_URL,
-   timeout: 5000
+   timeout: 10000
 });
 
 instance.interceptors.response.use(null, 

@@ -15,7 +15,7 @@ import {toast} from "react-toastify"
 class Products extends Component {
     state = { 
         products: [],
-        pageSize: 4,
+        pageSize: 5,
         currentPage: 1,
         mainCategories: [],
         subCategories: [],
@@ -108,8 +108,6 @@ class Products extends Component {
             this.setState({subsubCategories: this.state.orisubsub});
         }
         
-
-
         const selsub = (selected.subcategoryname !== "Unselect" ? selected : "") ;
         this.setState({dropselecteds: selsub, currentPage: 1}) 
          

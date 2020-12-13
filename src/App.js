@@ -14,6 +14,10 @@ import jwtDecode from "jwt-decode"
 import Logout from './components/logout';
 import MainCate from './components/maincate';
 import MainCategoryForm from './components/maincategoryform';
+import SubCate from './components/subcate';
+import SubCategoryForm from './components/subcategoryform';
+import SubSubCate from './components/subsubcate';
+import SubSubCategoryForm from './components/subsubcategoryform';
 
 class App extends Component {
 
@@ -57,6 +61,20 @@ class App extends Component {
         }}></Route>
         <Route path="/logout" component={Logout}></Route>
         <Route path="/products/:id" component={ProductForm}></Route>
+        <Route path="/subsubcategories/:id" component={SubSubCategoryForm}></Route>
+        <Route 
+        path="/subsubcategories" 
+        render={props => {
+          if(!this.state.user) return<Redirect to="/login"></Redirect>
+          return <SubSubCate {...props} ></SubSubCate>
+        }}></Route>
+        <Route path="/subcategories/:id" component={SubCategoryForm}></Route>
+        <Route 
+        path="/subcategories" 
+        render={props => {
+          if(!this.state.user) return<Redirect to="/login"></Redirect>
+          return <SubCate {...props} ></SubCate>
+        }}></Route>
         <Route path="/maincategories/:id" component={MainCategoryForm}></Route>
         <Route 
         path="/maincategories" 

@@ -29,6 +29,7 @@ class Form extends Component {
        
        validateProperty = ({name, value}) => 
     {
+       
         const obj = { [name]: value};
         const schema = {[name]: this.schema[name]};
         const {error} = Joi.validate(obj, schema);
@@ -50,8 +51,11 @@ class Form extends Component {
     
     handleChange = ({currentTarget: input}) => {
 
+     
         const errors = {...this.state.errors};
        const errorMessage = this.validateProperty(input);
+
+       console.log(input)
   
           if(errorMessage) errors[input.name] = errorMessage;
          else delete errors[input.name]
@@ -75,8 +79,8 @@ class Form extends Component {
             type={type}
             error={this.state.errors[name]} 
             name={name} 
-            label={label} 
             value={data[name]} 
+            label={label} 
             onChange={this.handleChange}>
             </Input>
                    

@@ -5,15 +5,54 @@ import ProductImage from './reuseableComps/productimage';
 import { toast } from 'react-toastify';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { confirmAlert } from 'react-confirm-alert';
+import Pagination from './reuseableComps/pagination';
+import { paginate } from './../utils/paginate';
+import _ from "lodash"
 
 class MainCate extends Component {
     state = { 
-        mainCategories: []
+        mainCategories: [],
+        pageSize: 5,
+        currentPage: 1,
+        sortColumn:
+        {
+            path:"maincategoryname",
+            order:"asc"
+        }
      }
 
+     doSort = path => {
+
+        const sortColumn = {...this.state.sortColumn}
+        if (sortColumn.path === path)
+        {   sortColumn.order =  (sortColumn.order === "asc") ? "desc" : "asc";
+         }
+        else {
+            sortColumn.path = path;
+            sortColumn.order = "asc";
+        }
+
+        this.setState({ sortColumn})
+         
+    }
+
+    renderSortIcon = column => {
+       
+        
+        if (column !== this.state.sortColumn.path) return null;
+        if (this.state.sortColumn.order === "asc") return <i className="fa fa-sort-asc"></i>
+         return <i className="fa fa-sort-desc"></i>
+    }
+
      async componentDidMount() {
+         
          const {data} = await getMainCategories();
          this.setState({mainCategories: data});
+     }
+
+     handlePageChange = (page) => {
+        this.setState({currentPage: page});
+
      }
 
      handleDelete = async (maincate) => {
@@ -56,28 +95,37 @@ class MainCate extends Component {
 
 
 
-    render() { 
+    render() {
 
-        const data = this.state.mainCategories;
+        const maincates = this.state.mainCategories.filter(m => m.maincategoryname !== "Unselect")
+
+
+        const sorted = _.orderBy(maincates, [this.state.sortColumn.path], [this.state.sortColumn.order]);
+ 
+        const main = paginate(sorted, this.state.currentPage, this.state.pageSize);
+        
        
         return (
-            <div style={{width: "800px"}}>
+            <div style={{width: "800px", height:"10px"}}>
                  <Link to="/maincategories/new"
                       className="btn btn-primary"
                       style={{marginBottom: 20}}>  
                     New Main-Category
                 </Link>
+
+                <p>Showing {maincates.length} Categories from the database.</p> 
+            
                 
                  <table  className="table table-striped table-sm">
                 <thead className="thead-dark">
                     <tr>
-                        <th>Name</th>
+                        <th className="clickable" onClick={() => this.doSort("maincategoryname")} >Name  {this.renderSortIcon("maincategoryname")}</th>
                         <th>Image</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody  >
-                    {this.state.mainCategories.map(maincate =>
+                    {main.map(maincate =>
                         <tr key= {maincate._id}>
                         <td><Link  to={`/maincategories/${maincate._id}`} >{maincate.maincategoryname}</Link></td>
                         <td><ProductImage image={maincate.image} ></ProductImage></td>
@@ -88,6 +136,13 @@ class MainCate extends Component {
                     
                 </tbody>
             </table>
+
+            <Pagination 
+            onPageChange={this.handlePageChange} 
+            currentPage={this.state.currentPage} 
+            itemsCount={maincates.length} 
+            pageSize= {this.state.pageSize}>
+            </Pagination>
             </div>
             
        

@@ -3,10 +3,10 @@ import Form from './reuseableComps/form';
 import Joi from "joi-browser"
 import firebase from './firebase'
 import { getMainCategory, saveMainCategory } from './../services/mainCategoriesService';
+import { toast } from 'react-toastify';
 
 class MainCategoryForm extends Form {
     state = { 
-
         files: null,
         maincateId: "",
         data: {
@@ -14,9 +14,7 @@ class MainCategoryForm extends Form {
             image:""
         },
         errors: {}
-     
-
-     }
+            }
 
      schema = {
         _id: Joi.string(),
@@ -33,7 +31,7 @@ class MainCategoryForm extends Form {
         const {data: maincate} = await getMainCategory(maincateId);
         this.setState({ data: this.mapToViewModel(maincate) });
  
-       }
+       } 
        catch(ex) {
 
         if (ex.response && ex.response.status === 404) 
@@ -55,10 +53,19 @@ class MainCategoryForm extends Form {
     }
 
     doSubmit = () => {
+        try{
+            
+            saveMainCategory(this.state.data)
+            this.props.history.push("/maincategories")
 
-        saveMainCategory(this.state.data)
-        alert(this.state.data.maincategoryname)
-        this.props.history.push("/maincategories")
+        }
+        catch(ex){
+
+            if (ex.response && ex.response.status === 400)
+            toast.error("Could complete task.")
+
+        }
+
 
     }
 
@@ -92,7 +99,7 @@ class MainCategoryForm extends Form {
     render() { 
         return ( 
             <div style={{margin: "50px"}}>
-            <h1>Add / Update a main-cayegory</h1>
+            <h1>Add / Update a Main-Category</h1>
 
             <img id="imgg" style={{margin: "50px"}}  width="200" height="200" src={this.state.data.image} alt="Please add an Image" className="img-thumbnail sm"></img>
                <input onChange={(e) =>this.handleChangee(e.target.files)} style={{padding: "10px", paddingRight: "10px"}}  type="file" className="btn btn-primary" ></input>

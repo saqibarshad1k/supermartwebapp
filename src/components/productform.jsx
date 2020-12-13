@@ -7,6 +7,7 @@ import { getSubCategories } from '../services/subCategoryService';
 import { getSubSubCategories } from '../services/subsubCategoriesService';
 import { getProduct, saveProduct } from './../services/productService';
 import _ from "lodash"
+import { toast } from 'react-toastify';
 
 class ProductForm extends Form {
 
@@ -20,7 +21,9 @@ class ProductForm extends Form {
             maincategoryname:"",
             subcategoryname:"",
             subsubcategoryname:"",
-            image:""
+            image:"",
+            type: "",
+            description: ""
         },
          mainCategory:[],
          subCategory:[],
@@ -36,7 +39,9 @@ class ProductForm extends Form {
         maincategoryname: Joi.string().required().label("Main Category"),
         subcategoryname: Joi.string().required().label("Sub Category"),
         subsubcategoryname: Joi.string().required().label("Sub Sub Category"),
-        image: Joi.string()
+        image: Joi.string(),
+        type: Joi.string(), 
+        description: Joi.string()
     }
 
     async populateCategories() {
@@ -84,7 +89,9 @@ class ProductForm extends Form {
                 maincategoryname: product.mainCategory._id,
                 subcategoryname: product.subCategory._id,
                 subsubcategoryname: product.subsubCategory._id,
-                image: product.image
+                image: product.image,
+                type: product.type,
+                description: product.description
 
     }
 
@@ -93,9 +100,20 @@ class ProductForm extends Form {
 
     doSubmit = () => {
 
-        saveProduct(this.state.data)
-        this.props.history.push("/products")
+        try{
 
+            saveProduct(this.state.data)
+            this.props.history.push("/products")
+
+        }
+        catch(ex)  {
+          
+            if (ex.response && ex.response.status === 400)
+            toast.error("Could complete task.")
+
+        }
+
+  
     }
 
     handleChangee = (files) => {
@@ -146,10 +164,16 @@ class ProductForm extends Form {
                         {this.renderInput("productName","Product Name")}
                         {this.renderInput("companyName","Comapany Name")}
                         {this.renderInput("price","Price")}
+                        {this.renderInput("type","Type")}
                         {this.renderSelect("maincategoryname","Main Category", main )}
                         {this.renderSelect("subcategoryname","Sub Category", sub)}
                         {this.renderSelect("subsubcategoryname","Sub Sub Category",subsub)}
-                        
+                        <div style={{marginBottom: "10px", marginTop: "10px"}} class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">Description</span>
+                          </div>
+                           <textarea value={this.state.data.description}  name="description" onChange={this.handleChange} class="form-control"></textarea>
+                        </div>
                         {this.renderButton("Save")}
                 </form>
             </div>
