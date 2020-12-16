@@ -3,6 +3,7 @@ import { getOrders } from '../services/orderService';
 import ShowOrder from './reuseableComps/showOrder';
 import io from "socket.io-client";
 import {toast} from 'react-toastify';
+import  {socket} from "./socket";
 
 
 
@@ -14,7 +15,6 @@ class Customers extends Component {
 
     }
 
-    
 
     async componentDidMount(){
 
@@ -31,7 +31,7 @@ class Customers extends Component {
 
             });
 
-        const socket = io("https://evening-beach-81187.herokuapp.com/apis/order/socket");
+       
         socket.on("orderUpdate", (orderUpdate) => {
             if (orderUpdate.status === "pending")
             {
