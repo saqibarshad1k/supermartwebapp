@@ -10,6 +10,7 @@ import ProductsTable from './productsTable';
 import {Link} from "react-router-dom";
 import _ from "lodash"
 import {toast} from "react-toastify"
+import SearchBox from './reuseableComps/searchBox';
 
 
 class Products extends Component {
@@ -25,6 +26,7 @@ class Products extends Component {
         dropselected: "",
         dropselecteds: "",
         dropselectedss: "",
+        searchQuery: "",
         subs: "",
         sortColumn:
         {
@@ -120,6 +122,14 @@ class Products extends Component {
          
      }
 
+     handleSearch = query => {
+        this.setState({searchQuery: query, dropselected: null,
+        dropselecteds: null,
+        dropselectedss: null, 
+        currentPage: 1})
+    }
+
+
      handleSort = (sortColumn) => {
          
         this.setState({ sortColumn})
@@ -131,6 +141,7 @@ class Products extends Component {
 
        const {products : Allproducts,sortColumn, dropselectedss, dropselecteds, dropselected, currentPage, pageSize, subsubCategories, subCategories, mainCategories} = this.state;
 
+      
         // if (Allproducts.length === 0) return <h3>Loading Data from the Database.</h3>
         
         const filtered = (dropselected && dropselected.maincategoryname !== "Unselect") ? Allproducts.filter(m => m.mainCategory._id === dropselected._id) : Allproducts; 
@@ -141,9 +152,22 @@ class Products extends Component {
 
         const sorted = _.orderBy(filteredsubsub, [sortColumn.path], [sortColumn.order]);
 
-        const products = paginate(sorted, currentPage, pageSize);
+        let products = paginate(sorted, currentPage, pageSize);
         
-     
+       
+        if (this.state.searchQuery)
+            products = this.state.products.filter(m => 
+                m.productName.toLowerCase().startsWith(this.state.searchQuery.toLowerCase())
+                );
+        else if( dropselected && dropselected._id)
+            products = this.state.products.filter(m => m.mainCategory._id === dropselected._id);         
+
+        else if( dropselecteds && dropselecteds._id)
+            products = this.state.products.filter(m => m.subCategory._id === dropselecteds._id);         
+        
+        else if( dropselectedss && dropselectedss._id)
+            products = this.state.products.filter(m => m.subsubCategory._id === dropselectedss._id);         
+
 
         return (
             <div className="row">
@@ -195,8 +219,9 @@ class Products extends Component {
 
                
 
-                <p>Showing {filteredsubsub.length} products from the database.</p> 
-            
+                <p>Showing {products.length} products from the database.</p> 
+                <SearchBox value={this.state.searchQuery} onChange={this.handleSearch} ></SearchBox>
+         
                 <ProductsTable sortColumn={sortColumn} products={products} onSort={this.handleSort} onDelete={this.handleDelete} onImage={this.showImage}></ProductsTable>
             <Pagination 
             onPageChange={this.handlePageChange} 
